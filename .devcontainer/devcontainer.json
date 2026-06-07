@@ -3,19 +3,33 @@
   "image": "mcr.microsoft.com/devcontainers/go:dev-1.26-bookworm",
   "runArgs": [
     "--userns=keep-id:uid=1000,gid=1000",
+    "--cap-add=SETUID",
+    "--cap-add=SETGID",
+    "--network=host",
+    "--security-opt=seccomp=unconfined",
     "--security-opt=label=disable",
-    "--network=host"
+    "--device=/dev/fuse"
   ],
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces,type=bind,Z",
+  "workspaceFolder": "/workspaces",
+  "initializeCommand": "echo 'Initializing environment hooks...'",
+  "onCreateCommand": "sudo apt-get update && sudo apt-get install -y podman fuse-overlayfs && sudo rm -f /etc/subuid /etc/subgid && sudo touch /etc/subuid /etc/subgid",
+  "updateContentCommand": "mkdir -p /home/vscode/.config/containers && echo '[storage]\ndriver = \"overlay\"\n[storage.options.overlay]\nmount_program = \"/usr/bin/fuse-overlayfs\"' > /home/vscode/.config/containers/storage.conf",
   "mounts": [
     "source=${localEnv:HOME}/.container-vscode-cache,target=/home/vscode/.vscode-server,type=bind"
   ],
   "containerUser": "vscode",
-  "updateRemoteUserUID": true,
+  "remoteUser": "vscode",
   "customizations": {
     "vscode": {
       "extensions": [
-        "golang.go"
-      ]
+        "golang.go",
+        "redhat.vscode-podman"
+      ],
+      "settings": {
+        "go.useLanguageServer": true
+      }
     }
-  }
+  },
+  "postCreateCommand": "podman system migrate"
 }
