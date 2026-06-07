@@ -1,0 +1,21 @@
+{
+  "name": "Go Secure Sandbox",
+  "image": "mcr.microsoft.com/devcontainers/go:dev-1.26-bookworm",
+  "runArgs": [
+    "--userns=keep-id:uid=1000,gid=1000",
+    "--security-opt=label=disable",
+    "--network=host"
+  ],
+  "mounts": [
+    "source=${localEnv:HOME}/.container-vscode-cache,target=/home/vscode/.vscode-server,type=bind"
+  ],
+  "containerUser": "vscode",
+  "updateRemoteUserUID": true,
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go"
+      ]
+    }
+  }
+}
