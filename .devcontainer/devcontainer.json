@@ -10,11 +10,10 @@
     "--security-opt=label=disable",
     "--device=/dev/fuse"
   ],
+  "onCreateCommand": "sudo .devcontainer/onCreateCommand.bash",
+  "updateContentCommand": ".devcontainer/updateContentCommand.bash",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces,type=bind,Z",
   "workspaceFolder": "/workspaces",
-  "initializeCommand": "echo 'Initializing environment hooks...'",
-  "onCreateCommand": "sudo apt-get update && sudo apt-get install -y podman fuse-overlayfs && sudo rm -f /etc/subuid /etc/subgid && sudo touch /etc/subuid /etc/subgid",
-  "updateContentCommand": "mkdir -p /home/vscode/.config/containers && echo '[storage]\ndriver = \"overlay\"\n[storage.options.overlay]\nmount_program = \"/usr/bin/fuse-overlayfs\"' > /home/vscode/.config/containers/storage.conf",
   "mounts": [
     "source=${localEnv:HOME}/.container-vscode-cache,target=/home/vscode/.vscode-server,type=bind"
   ],
