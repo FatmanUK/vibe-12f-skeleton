@@ -10,4 +10,6 @@ LABEL org.opencontainers.image.version=${VERSION}
 
 WORKDIR /root/
 COPY main .
+ARG METRICS_SERVER_PORT
+EXPOSE ${METRICS_SERVER_PORT}
 CMD ["./main"]

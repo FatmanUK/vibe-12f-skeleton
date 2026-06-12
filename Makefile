@@ -9,6 +9,7 @@ VERSION = $(shell more ./VERSION)
 BUILD_DATE = $(shell date +%Y%m%d)
 BUILD_TIMESTAMP = $(shell date +%Y%m%dT%H%M%SZ)
 CKSUM_SCRIPT = import hashlib; print(hashlib.sha1(open('./$(BINARY_NAME)','rb').read()).hexdigest())
+METRICS_SERVER_PORT ?= 9090
 
 # Default target
 all: clean podman-build
@@ -44,8 +45,12 @@ podman-build: build
 		--build-arg BUILD_DATE=$(BUILD_DATE) \
 		--build-arg BUILD_TIMESTAMP=$(BUILD_TIMESTAMP) \
 		--build-arg VERSION=$(VERSION) \
+		--build-arg METRICS_SERVER_PORT=$(METRICS_SERVER_PORT) \
 		.
 
 # Run the container locally using podman
 podman-run: podman-build
-	$(PODMAN) run --rm -it $(IMAGE_NAME)
+	$(PODMAN) run \
+		--rm -it \
+		-p$(METRICS_SERVER_PORT):$(METRICS_SERVER_PORT) \
+		$(IMAGE_NAME):latest
