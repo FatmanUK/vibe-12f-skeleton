@@ -8,13 +8,16 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v6
 
     - name: Set up Go
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v6
       with:
         go-version: '1.24'
 
@@ -28,14 +31,14 @@ jobs:
       run: make test
 
     - name: Build Podman image
-      run: podman build -t ghcr.io/FatmanUK/vibe-12f-skeleton:${{ github.sha }} .
+      run: make podman-build
 
     - name: Log in to GitHub Container Registry
-      uses: docker/login-action@v2
+      uses: docker/login-action@v4
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Push Podman image to GHCR
-      run: podman push ghcr.io/FatmanUK/vibe-12f-skeleton:${{ github.sha }}
+      run: make podman-push
