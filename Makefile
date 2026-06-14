@@ -14,7 +14,8 @@ METRICS_SERVER_PORT ?= 9090
 # Default target
 all: clean podman-build
 
-.PHONY: clean
+.PHONY: clean test
+
 clean:
 	rm ./$(BINARY_NAME)
 
